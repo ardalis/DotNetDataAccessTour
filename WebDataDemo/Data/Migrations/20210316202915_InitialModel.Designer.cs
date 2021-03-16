@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebDataDemo.Data;
 
 namespace WebDataDemo.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210316202915_InitialModel")]
+    partial class InitialModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,24 +229,11 @@ namespace WebDataDemo.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Steve Smith"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Julia Lerman"
-                        });
                 });
 
             modelBuilder.Entity("WebDataDemo.Model.Course", b =>
@@ -255,36 +244,14 @@ namespace WebDataDemo.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Slug")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Slug = "csharp-solid-principles",
-                            Title = "SOLID Principles for C# Developers"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Slug = "design-patterns-overview",
-                            Title = "Design Patterns Overview"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Slug = "domain-driven-design-fundamentals",
-                            Title = "Domain-Driven Design Fundamentals"
-                        });
                 });
 
             modelBuilder.Entity("WebDataDemo.Model.CourseAuthor", b =>
@@ -310,36 +277,6 @@ namespace WebDataDemo.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("CourseAuthor");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AuthorId = 1,
-                            CourseId = 1,
-                            RoyaltyPercentage = 100
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AuthorId = 1,
-                            CourseId = 2,
-                            RoyaltyPercentage = 100
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AuthorId = 1,
-                            CourseId = 3,
-                            RoyaltyPercentage = 50
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AuthorId = 2,
-                            CourseId = 3,
-                            RoyaltyPercentage = 50
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
