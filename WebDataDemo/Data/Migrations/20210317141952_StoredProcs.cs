@@ -33,6 +33,20 @@ SELECT ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
 FROM CourseAuthor ca
 INNER JOIN Courses c ON c.Id = ca.CourseId
 WHERE ca.AuthorId = @AuthorId')");
+
+            migrationBuilder.Sql(
+            @"
+    EXEC ('CREATE PROCEDURE InsertAuthor
+        @name varchar(100)
+    AS
+INSERT Authors (name) VALUES (@name);SELECT CAST(scope_identity() AS int);')");
+
+            migrationBuilder.Sql(
+            @"
+    EXEC ('CREATE PROCEDURE DeleteAuthor
+        @AuthorId int
+    AS
+DELETE Authors WHERE Id = @AuthorId;')");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -41,6 +55,9 @@ WHERE ca.AuthorId = @AuthorId')");
             @"
     EXEC ('DROP PROCEDURE ListAuthors');
     EXEC ('DROP PROCEDURE ListAuthorsWithCourses')
+    EXEC ('DROP PROCEDURE ListAuthorsWithCoursesMulti')
+    EXEC ('DROP PROCEDURE InsertAuthor')
+    EXEC ('DROP PROCEDURE DeleteAuthors')
 ");
         }
     }

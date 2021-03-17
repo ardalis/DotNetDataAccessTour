@@ -76,8 +76,23 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<AuthorDTO> Post([FromBody] CreateAuthorRequest newAuthor)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "InsertAuthor";
+            var cmd = new SqlCommand(sql, conn);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Name", newAuthor.Name);
+            conn.Open();
+            int newId = (int)cmd.ExecuteScalar();
+
+            var authorDto = new AuthorDTO
+            {
+                Id = newId,
+                Name = newAuthor.Name
+            };
+
+            return Ok(authorDto);
         }
 
         // PUT api/<AuthorsController>/5

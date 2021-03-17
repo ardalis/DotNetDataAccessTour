@@ -48,8 +48,20 @@ namespace WebDataDemo.Option_04_Dapper_Sprocs
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<AuthorDTO> Post([FromBody] CreateAuthorRequest newAuthor)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "InsertAuthor";
+
+            int newId = conn.QuerySingle<int>(sql, new { name = newAuthor.Name }, commandType: System.Data.CommandType.StoredProcedure);
+
+            var authorDto = new AuthorDTO
+            {
+                Id = newId,
+                Name = newAuthor.Name
+            };
+
+            return Ok(authorDto);
         }
 
         // PUT api/<AuthorsController>/5
@@ -60,8 +72,13 @@ namespace WebDataDemo.Option_04_Dapper_Sprocs
 
         // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "DeleteAuthor";
+            conn.Execute(sql, new { AuthorId = id }, commandType: System.Data.CommandType.StoredProcedure);
+
+            return NoContent();
         }
     }
 }
