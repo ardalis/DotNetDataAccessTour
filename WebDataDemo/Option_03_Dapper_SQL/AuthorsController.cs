@@ -52,8 +52,21 @@ WHERE ca.AuthorId = @AuthorId";
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<AuthorDTO> Post([FromBody] CreateAuthorRequest newAuthor)
         {
+            // https://stackoverflow.com/a/8270264
+            var sql = "INSERT Authors (name) VALUES (@name);SELECT CAST(scope_identity() AS int)";
+            using var conn = new SqlConnection(_connString);
+
+            int newId = conn.QuerySingle<int>(sql, new { name = newAuthor.Name });
+
+            var authorDto = new AuthorDTO
+            {
+                Id = newId,
+                Name = newAuthor.Name
+            };
+
+            return Ok(authorDto);
         }
 
         // PUT api/<AuthorsController>/5
@@ -64,8 +77,14 @@ WHERE ca.AuthorId = @AuthorId";
 
         // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "DELETE Authors WHERE Id = @AuthorId";
+
+            conn.Execute(sql, new { AuthorId = id });
+
+            return NoContent();
         }
     }
 }
