@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using WebDataDemo.Data;
 using WebDataDemo.Dtos;
+using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_05_Ef_Core
 {
@@ -55,8 +56,22 @@ namespace WebDataDemo.Option_05_Ef_Core
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<AuthorDTO> Post([FromBody] CreateAuthorRequest newAuthor)
         {
+            var author = new Author
+            {
+                Name = newAuthor.Name
+            };
+            _dbContext.Authors.Add(author);
+            _dbContext.SaveChanges();
+
+            var authorDto = new AuthorDTO
+            {
+                Id = author.Id,
+                Name = author.Name
+            };
+
+            return Ok(authorDto);
         }
 
         // PUT api/<AuthorsController>/5
@@ -67,8 +82,16 @@ namespace WebDataDemo.Option_05_Ef_Core
 
         // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            var authorToDelete = _dbContext.Authors.Find(id);
+
+            if (authorToDelete == null) return NotFound();
+
+            _dbContext.Remove(authorToDelete);
+            _dbContext.SaveChanges();
+
+            return NoContent();
         }
     }
 }
