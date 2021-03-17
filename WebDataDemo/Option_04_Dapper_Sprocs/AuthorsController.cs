@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using WebDataDemo.Dtos;
 using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_04_Dapper_Sprocs
@@ -20,11 +21,12 @@ namespace WebDataDemo.Option_04_Dapper_Sprocs
 
         // GET: api/<AuthorsController>
         [HttpGet]
-        public ActionResult<Author> Get()
+        public ActionResult<AuthorDTO> Get()
         {
             using var conn = new SqlConnection(_connString);
             var sql = "ListAuthors";
-            var authors = conn.Query(sql, commandType: System.Data.CommandType.StoredProcedure).ToList();
+            var authors = conn.Query<AuthorDTO>(sql, commandType: System.Data.CommandType.StoredProcedure)
+                .ToList();
 
             return Ok(authors);
         }

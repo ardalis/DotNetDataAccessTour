@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using WebDataDemo.Model;
+using WebDataDemo.Dtos;
 
 namespace WebDataDemo.Option_02_ADONET_Sprocs
 {
@@ -19,9 +19,9 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
 
         // GET: api/<AuthorsController>
         [HttpGet]
-        public ActionResult<Author> Get()
+        public ActionResult<AuthorDTO> Get()
         {
-            var authors = new List<Author>();
+            var authors = new List<AuthorDTO>();
             using var conn = new SqlConnection(_connString);
             var sql = "ListAuthors";
             var cmd = new SqlCommand(sql, conn);
@@ -32,7 +32,7 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
             {
                 while (reader.Read())
                 {
-                    var author = new Author();
+                    var author = new AuthorDTO();
                     author.Id = reader.GetInt32(0);
                     author.Name = reader.GetString(1);
                     authors.Add(author);

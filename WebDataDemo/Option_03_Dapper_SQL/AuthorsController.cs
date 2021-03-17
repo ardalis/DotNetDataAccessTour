@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using WebDataDemo.Dtos;
 using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_03_Dapper_SQL
@@ -20,11 +21,11 @@ namespace WebDataDemo.Option_03_Dapper_SQL
 
         // GET: api/<AuthorsController>
         [HttpGet]
-        public ActionResult<Author> Get()
+        public ActionResult<AuthorDTO> Get()
         {
             using var conn = new SqlConnection(_connString);
             var sql = "SELECT * FROM Authors";
-            var authors = conn.Query(sql).ToList();
+            var authors = conn.Query<AuthorDTO>(sql).ToList();
 
             return Ok(authors);
         }
