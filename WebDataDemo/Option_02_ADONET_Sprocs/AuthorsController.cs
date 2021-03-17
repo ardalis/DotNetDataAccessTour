@@ -44,9 +44,33 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
 
         // GET api/<AuthorsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<AuthorWithCoursesDTO> Get(int id)
         {
-            return "value";
+            var author = new AuthorWithCoursesDTO();
+            using var conn = new SqlConnection(_connString);
+            var sql = "ListAuthorsWithCourses";
+            var cmd = new SqlCommand(sql, conn);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@AuthorId", id);
+            conn.Open();
+            using var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    author.Id = reader.GetInt32(0);
+                    author.Name = reader.GetString(1);
+                    author.Courses.Add(new CourseDTO
+                    {
+                        Id = reader.GetInt32(3),
+                        AuthorId = reader.GetInt32(4),
+                        RoyaltyPercentage = reader.GetInt32(2),
+                        Title = reader.GetString(5)
+                    });
+                }
+            }
+
+            return Ok(author);
         }
 
         // POST api/<AuthorsController>

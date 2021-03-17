@@ -33,9 +33,14 @@ namespace WebDataDemo.Option_04_Dapper_Sprocs
 
         // GET api/<AuthorsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<AuthorWithCoursesDTO> Get(int id)
         {
-            return "value";
+            using var conn = new SqlConnection(_connString);
+            var sql = "ListAuthorsWithCourses";
+            var authors = conn.Query<AuthorWithCoursesDTO>(sql, new { AuthorId = id }, commandType: System.Data.CommandType.StoredProcedure)
+                .ToList();
+
+            return Ok(authors);
         }
 
         // POST api/<AuthorsController>

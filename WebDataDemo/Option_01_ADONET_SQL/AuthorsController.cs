@@ -43,9 +43,36 @@ namespace WebDataDemo.Option_01_ADONET_SQL
 
         // GET api/<AuthorsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<AuthorWithCoursesDTO> Get(int id)
         {
-            return "";
+            var author = new AuthorWithCoursesDTO();
+            using var conn = new SqlConnection(_connString);
+            var sql = @"SELECT a.Id, a.Name, ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
+FROM Authors a
+INNER JOIN CourseAuthor ca ON a.Id = ca.AuthorId
+INNER JOIN Courses c ON c.Id = ca.CourseId
+WHERE a.Id = @AuthorId";
+            var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@AuthorId", id);
+            conn.Open();
+            using var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    author.Id = reader.GetInt32(0);
+                    author.Name = reader.GetString(1);
+                    author.Courses.Add(new CourseDTO
+                    {
+                        Id = reader.GetInt32(3),
+                        AuthorId = reader.GetInt32(4),
+                        RoyaltyPercentage = reader.GetInt32(2),
+                        Title = reader.GetString(5)
+                    });
+                }
+            }
+
+            return Ok(author);
         }
 
         // POST api/<AuthorsController>

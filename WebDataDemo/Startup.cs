@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebDataDemo.Data;
+using Dapper.FluentMap;
+using WebDataDemo.DapperMapping;
 
 namespace WebDataDemo
 {
@@ -59,6 +61,11 @@ namespace WebDataDemo
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new CourseDtoMap());
             });
         }
     }
