@@ -8,6 +8,7 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
 {
     [Route("api/v02/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "2. Authors - ADO.NET SPROCS")]
     public class AuthorsController : ControllerBase
     {
         private readonly string _connString;

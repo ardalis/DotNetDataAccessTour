@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using WebDataDemo.Data;
 using WebDataDemo.Dtos;
-using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_05_Ef_Core
 {
     [Route("api/v05/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "5. Authors - EF Core")]
     public class AuthorsController : ControllerBase
     {
         private readonly AppDbContext _dbContext;

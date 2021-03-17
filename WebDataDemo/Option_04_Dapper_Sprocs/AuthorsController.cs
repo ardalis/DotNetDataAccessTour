@@ -4,12 +4,12 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using WebDataDemo.Dtos;
-using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_04_Dapper_Sprocs
 {
     [Route("api/v04/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "4. Authors - Dapper SPROCS")]
     public class AuthorsController : ControllerBase
     {
         private readonly string _connString;
@@ -36,11 +36,14 @@ namespace WebDataDemo.Option_04_Dapper_Sprocs
         public ActionResult<AuthorWithCoursesDTO> Get(int id)
         {
             using var conn = new SqlConnection(_connString);
-            var sql = "ListAuthorsWithCourses";
-            var authors = conn.Query<AuthorWithCoursesDTO>(sql, new { AuthorId = id }, commandType: System.Data.CommandType.StoredProcedure)
-                .ToList();
+            var sql = "ListAuthorsWithCoursesMulti";
 
-            return Ok(authors);
+            var result = conn.QueryMultiple(sql, new { AuthorId = id }, commandType: System.Data.CommandType.StoredProcedure);
+
+            var author = result.ReadSingle<AuthorWithCoursesDTO>();
+            var courses = result.Read<CourseDTO>().ToList();
+            author.Courses.AddRange(courses);
+            return Ok(author);
         }
 
         // POST api/<AuthorsController>

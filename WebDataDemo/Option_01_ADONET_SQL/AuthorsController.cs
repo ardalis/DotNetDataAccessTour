@@ -8,6 +8,7 @@ namespace WebDataDemo.Option_01_ADONET_SQL
 {
     [Route("api/v01/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "1. Authors - ADO.NET SQL")]
     public class AuthorsController : ControllerBase
     {
         private readonly string _connString;

@@ -5,12 +5,12 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using WebDataDemo.Dtos;
-using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_03_Dapper_SQL
 {
     [Route("api/v03/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "3. Authors - Dapper SQL")]
     public class AuthorsController : ControllerBase
     {
         private readonly string _connString;

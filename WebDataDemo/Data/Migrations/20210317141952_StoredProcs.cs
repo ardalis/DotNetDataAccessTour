@@ -23,6 +23,16 @@ namespace WebDataDemo.Data.Migrations
         INNER JOIN Courses c ON c.Id = ca.CourseId
         WHERE a.Id = @AuthorId
 ')");
+            migrationBuilder.Sql(
+            @"
+    EXEC ('CREATE PROCEDURE ListAuthorsWithCoursesMulti
+        @AuthorId int
+    AS
+SELECT a.Id, a.Name FROM Authors a WHERE Id = @AuthorId;
+SELECT ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
+FROM CourseAuthor ca
+INNER JOIN Courses c ON c.Id = ca.CourseId
+WHERE ca.AuthorId = @AuthorId')");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
