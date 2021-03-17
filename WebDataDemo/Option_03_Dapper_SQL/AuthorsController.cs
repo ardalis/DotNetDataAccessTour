@@ -1,13 +1,9 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
-using System.Threading.Tasks;
 using WebDataDemo.Model;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebDataDemo.Option_03_Dapper_SQL
 {
@@ -15,11 +11,18 @@ namespace WebDataDemo.Option_03_Dapper_SQL
     [ApiController]
     public class AuthorsController : ControllerBase
     {
+        private readonly string _connString;
+
+        public AuthorsController(IConfiguration config)
+        {
+            _connString = config.GetConnectionString("DefaultConnection");
+        }
+
         // GET: api/<AuthorsController>
         [HttpGet]
         public ActionResult<Author> Get()
         {
-            using var conn = new SqlConnection("Server = (localdb)\\mssqllocaldb; Database = DotNetDataAccessTour; Trusted_Connection = True; MultipleActiveResultSets = true");
+            using var conn = new SqlConnection(_connString);
             var sql = "SELECT * FROM Authors";
             var authors = conn.Query(sql).ToList();
 

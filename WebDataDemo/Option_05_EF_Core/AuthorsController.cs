@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using WebDataDemo.Data;
 using WebDataDemo.Model;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebDataDemo.Option_05_Ef_Core
 {
@@ -28,9 +27,21 @@ namespace WebDataDemo.Option_05_Ef_Core
 
         // GET api/<AuthorsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<Author> Get(int id)
         {
-            return "value";
+            // notes on Find vs. SingleOrDefault
+            // https://stackoverflow.com/questions/7348663/c-sharp-entity-framework-how-can-i-combine-a-find-and-include-on-a-model-obje
+            var author = _dbContext.Authors
+                .Include(author => author.Courses)
+                .ThenInclude(ca => ca.Course)
+                //.Select(a => new
+                //{
+                //    Id = a.Id,
+                //    Name = a.Name,
+
+                //})
+                .SingleOrDefault(a => a.Id == id);
+            return author;
         }
 
         // POST api/<AuthorsController>

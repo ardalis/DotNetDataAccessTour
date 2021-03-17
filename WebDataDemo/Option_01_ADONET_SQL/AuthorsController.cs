@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using System;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebDataDemo.Model;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebDataDemo.Option_01_ADONET_SQL
 {
@@ -14,12 +10,19 @@ namespace WebDataDemo.Option_01_ADONET_SQL
     [ApiController]
     public class AuthorsController : ControllerBase
     {
+        private readonly string _connString;
+
+        public AuthorsController(IConfiguration config)
+        {
+            _connString = config.GetConnectionString("DefaultConnection");
+        }
+
         // GET: api/<AuthorsController>
         [HttpGet]
         public ActionResult<Author> Get()
         {
             var authors = new List<Author>();
-            using var conn = new SqlConnection("Server = (localdb)\\mssqllocaldb; Database = DotNetDataAccessTour; Trusted_Connection = True; MultipleActiveResultSets = true");
+            using var conn = new SqlConnection(_connString);
             var sql = "SELECT * FROM Authors";
             var cmd = new SqlCommand(sql, conn);
             conn.Open();
@@ -42,7 +45,7 @@ namespace WebDataDemo.Option_01_ADONET_SQL
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            return "";
         }
 
         // POST api/<AuthorsController>
