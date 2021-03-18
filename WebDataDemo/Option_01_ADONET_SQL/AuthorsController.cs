@@ -50,8 +50,8 @@ namespace WebDataDemo.Option_01_ADONET_SQL
             using var conn = new SqlConnection(_connString);
             var sql = @"SELECT a.Id, a.Name, ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
 FROM Authors a
-INNER JOIN CourseAuthor ca ON a.Id = ca.AuthorId
-INNER JOIN Courses c ON c.Id = ca.CourseId
+LEFT JOIN CourseAuthor ca ON a.Id = ca.AuthorId
+LEFT JOIN Courses c ON c.Id = ca.CourseId
 WHERE a.Id = @AuthorId";
             var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@AuthorId", id);
@@ -63,13 +63,16 @@ WHERE a.Id = @AuthorId";
                 {
                     author.Id = reader.GetInt32(0);
                     author.Name = reader.GetString(1);
-                    author.Courses.Add(new CourseDTO
+                    if (!reader.IsDBNull(3))
                     {
-                        Id = reader.GetInt32(3),
-                        AuthorId = reader.GetInt32(4),
-                        RoyaltyPercentage = reader.GetInt32(2),
-                        Title = reader.GetString(5)
-                    });
+                        author.Courses.Add(new CourseDTO
+                        {
+                            Id = reader.GetInt32(3),
+                            AuthorId = reader.GetInt32(4),
+                            RoyaltyPercentage = reader.GetInt32(2),
+                            Title = reader.GetString(5)
+                        });
+                    }
                 }
             }
 

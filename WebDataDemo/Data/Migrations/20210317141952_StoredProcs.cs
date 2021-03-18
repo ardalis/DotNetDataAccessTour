@@ -19,8 +19,8 @@ namespace WebDataDemo.Data.Migrations
     AS
         SELECT a.Id, a.Name, ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
         FROM Authors a
-        INNER JOIN CourseAuthor ca ON a.Id = ca.AuthorId
-        INNER JOIN Courses c ON c.Id = ca.CourseId
+        LEFT JOIN CourseAuthor ca ON a.Id = ca.AuthorId
+        LEFT JOIN Courses c ON c.Id = ca.CourseId
         WHERE a.Id = @AuthorId
 ')");
             migrationBuilder.Sql(
