@@ -2,6 +2,8 @@
 
 A tour of different data access approaches in .NET 5+.
 
+**Note:** This is meant to demonstrate different ways to make data access calls, not best practices (or even reasonably good practices) for building ASP.NET Core Web APIs.
+
 ## Data Access Options (CRUD + Queries)
 
 - ADO.NET Custom SQL
