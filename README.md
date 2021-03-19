@@ -21,6 +21,11 @@ A tour of different data access approaches in .NET 5+.
 
 EF and its Migrations are not required for all of these variants, but it does provide a quick and easy way to get your data in place if you want to run these samples. Just run this command from the `WebDataDemo` folder:
 
+Run this command to get ef core tools
+```powershell
+dotnet tool install --global dotnet-ef
+```
+
 ```powershell
 dotnet ef database update
 ```
