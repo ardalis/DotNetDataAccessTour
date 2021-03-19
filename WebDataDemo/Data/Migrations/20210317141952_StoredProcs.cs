@@ -47,6 +47,8 @@ INSERT Authors (name) VALUES (@name);SELECT CAST(scope_identity() AS int);')");
         @AuthorId int
     AS
 DELETE Authors WHERE Id = @AuthorId;')");
+
+          
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
