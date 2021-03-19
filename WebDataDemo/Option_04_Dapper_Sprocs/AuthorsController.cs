@@ -68,6 +68,9 @@ namespace WebDataDemo.Option_04_Dapper_Sprocs
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "UpdateAuthor";
+            conn.Query(sql, new { Name = value, Id = id }, commandType: System.Data.CommandType.StoredProcedure);
         }
 
         // DELETE api/<AuthorsController>/5

@@ -73,6 +73,10 @@ WHERE ca.AuthorId = @AuthorId";
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "UPDATE Authors SET name = @Name WHERE Id = @Id";
+
+            conn.Execute(sql, new { Name = value, Id = id });
         }
 
         // DELETE api/<AuthorsController>/5

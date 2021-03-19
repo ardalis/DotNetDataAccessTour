@@ -99,6 +99,18 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            using var conn = new SqlConnection(_connString);
+            var sql = "UpdateAuthor";
+            var cmd = new SqlCommand(sql, conn);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Parameters.AddWithValue("@Name", value);
+
+            conn.Open();
+
+            cmd.ExecuteScalar();
+
+            conn.Close();
         }
 
         // DELETE api/<AuthorsController>/5

@@ -78,6 +78,13 @@ namespace WebDataDemo.Option_05_Ef_Core
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            var authorToUpdate = _dbContext.Authors.Find(id);
+
+            authorToUpdate.Name = value;
+
+            _dbContext.Update(authorToUpdate);
+            _dbContext.SaveChanges();
+
         }
 
         // DELETE api/<AuthorsController>/5
