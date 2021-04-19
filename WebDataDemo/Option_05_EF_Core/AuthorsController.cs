@@ -18,6 +18,7 @@ namespace WebDataDemo.Option_05_Ef_Core
         {
             _dbContext = dbContext;
         }
+
         // GET: api/<AuthorsController>
         [HttpGet]
         public ActionResult<AuthorDTO> Get()
@@ -76,14 +77,17 @@ namespace WebDataDemo.Option_05_Ef_Core
 
         // PUT api/<AuthorsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, [FromBody] string value)
         {
             var authorToUpdate = _dbContext.Authors.Find(id);
+            if (authorToUpdate is null) return NotFound();
 
             authorToUpdate.Name = value;
 
             _dbContext.Update(authorToUpdate);
             _dbContext.SaveChanges();
+
+            return NoContent();
 
         }
 

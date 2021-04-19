@@ -30,6 +30,11 @@ namespace WebDataDemo
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<AppDbContext>();
             services.AddRazorPages();
+            services.AddScoped<Option_06_Repo.IAuthorRepository, Option_06_Repo.EfAuthorRepository>();
+            services.AddScoped<Option_07_Repo.IAuthorRepository, Option_07_Repo.EfAuthorRepository>();
+            services.AddScoped<Option_08_Repo.IAuthorRepository, Option_08_Repo.EfAuthorRepository>();
+            services.AddScoped<Option_09_Repo_Spec.IAuthorRepository, Option_09_Repo_Spec.EfAuthorRepository>();
+            services.AddScoped(typeof(Option_10_Repo_Spec_Generic.IRepository<>), typeof(Option_10_Repo_Spec_Generic.EfRepository<>));
 
             services.AddSwaggerGen(options =>
             {

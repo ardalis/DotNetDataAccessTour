@@ -53,7 +53,7 @@ FROM Authors a
 LEFT JOIN CourseAuthor ca ON a.Id = ca.AuthorId
 LEFT JOIN Courses c ON c.Id = ca.CourseId
 WHERE a.Id = @AuthorId";
-            var cmd = new SqlCommand(sql, conn);
+            using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@AuthorId", id);
             conn.Open();
             using var reader = cmd.ExecuteReader();
