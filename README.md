@@ -41,3 +41,16 @@ docker run --name seqlogger -d -p 5341:5341 -p 5342:80 -e ACCEPT_EULA=Y datalust
 
 Verify Seq is running: http://localhost:5342
 
+## Running k6 scripts
+
+Install k6:
+
+```powershell
+choco install k6
+```
+
+Run scripts from the k6 folder.
+
+```powershell
+k6 run data-strategy-01.js
+```
