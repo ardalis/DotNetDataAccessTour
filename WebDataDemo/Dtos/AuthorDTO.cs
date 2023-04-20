@@ -1,8 +1,7 @@
-﻿namespace WebDataDemo.Dtos
-{
+﻿namespace WebDataDemo.Dtos;
 
-    public class AuthorDTO : CreateAuthorRequest
-    {
-        public int Id { get; set; }
-    }
+
+public class AuthorDTO : CreateAuthorRequest
+{
+    public int Id { get; set; }
 }

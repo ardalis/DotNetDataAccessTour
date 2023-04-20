@@ -1,4 +1,4 @@
-using Dapper.FluentMap;
+﻿using Dapper.FluentMap;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -29,23 +29,23 @@ builder.Services.AddScoped(typeof(WebDataDemo.Option_10_Repo_Spec_Generic.IRepos
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.EnableAnnotations();
-    options.TagActionsBy(api => new[] { api.GroupName });
-    options.DocInclusionPredicate((name, api) => true);
+  options.EnableAnnotations();
+  options.TagActionsBy(api => new[] { api.GroupName });
+  options.DocInclusionPredicate((name, api) => true);
 });
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
+  app.UseDeveloperExceptionPage();
+  app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+  app.UseExceptionHandler("/Error");
+  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+  app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -54,7 +54,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample v1");
+  c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample v1");
 });
 
 app.UseRouting();
@@ -67,7 +67,7 @@ app.MapControllers();
 
 FluentMapper.Initialize(config =>
 {
-    config.AddMap(new CourseDtoMap());
+  config.AddMap(new CourseDtoMap());
 });
 
 app.Run();

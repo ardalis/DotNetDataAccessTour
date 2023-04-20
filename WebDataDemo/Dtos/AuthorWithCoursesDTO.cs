@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace WebDataDemo.Dtos;
 
-namespace WebDataDemo.Dtos
+public class AuthorWithCoursesDTO : AuthorDTO
 {
-    public class AuthorWithCoursesDTO : AuthorDTO
-    {
-        public List<CourseDTO> Courses { get; set; } = new List<CourseDTO>();
-    }
+    public List<CourseDTO> Courses { get; set; } = new List<CourseDTO>();
 }

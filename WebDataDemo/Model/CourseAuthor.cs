@@ -1,11 +1,10 @@
-﻿namespace WebDataDemo.Model
+﻿namespace WebDataDemo.Model;
+
+public class CourseAuthor
 {
-    public class CourseAuthor
-    {
-        public int Id { get; set; }
-        public int AuthorId { get; set; }
-        public Course Course { get; set; }
-        public int CourseId { get; set; }
-        public int RoyaltyPercentage { get; set; }
-    }
+    public int Id { get; set; }
+    public int AuthorId { get; set; }
+    public Course Course { get; set; }
+    public int CourseId { get; set; }
+    public int RoyaltyPercentage { get; set; }
 }

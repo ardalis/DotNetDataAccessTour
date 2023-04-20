@@ -1,138 +1,135 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using WebDataDemo.Dtos;
 
-namespace WebDataDemo.Option_01_ADONET_SQL
+namespace WebDataDemo.Option_01_ADONET_SQL;
+
+[Route("api/v01/[controller]")]
+[ApiController]
+[ApiExplorerSettings(GroupName = "1. Authors - ADO.NET SQL")]
+public class AuthorsController : ControllerBase
 {
-    [Route("api/v01/[controller]")]
-    [ApiController]
-    [ApiExplorerSettings(GroupName = "1. Authors - ADO.NET SQL")]
-    public class AuthorsController : ControllerBase
+  private readonly string _connString;
+  private readonly ILogger<AuthorsController> _logger;
+
+  public AuthorsController(IConfiguration config,
+      ILogger<AuthorsController> logger)
+  {
+    _connString = config.GetConnectionString("DefaultConnection");
+    _logger = logger;
+  }
+
+  // GET: api/<AuthorsController>
+  [HttpGet]
+  public ActionResult<AuthorDTO> Get()
+  {
+    var authors = new List<AuthorDTO>();
+    using var conn = new SqlConnection(_connString);
+    var sql = "SELECT * FROM Authors";
+    using var cmd = new SqlCommand(sql, conn);
+    conn.Open();
+    _logger.LogInformation("Executing query: {sql}", sql);
+    using var reader = cmd.ExecuteReader();
+    if (reader.HasRows)
     {
-        private readonly string _connString;
-        private readonly ILogger<AuthorsController> _logger;
+      while (reader.Read())
+      {
+        var author = new AuthorDTO();
+        author.Id = reader.GetInt32(0);
+        author.Name = reader.GetString(1);
+        authors.Add(author);
+      }
+    }
 
-        public AuthorsController(IConfiguration config,
-            ILogger<AuthorsController> logger)
-        {
-            _connString = config.GetConnectionString("DefaultConnection");
-            _logger = logger;
-        }
+    return Ok(authors);
+  }
 
-        // GET: api/<AuthorsController>
-        [HttpGet]
-        public ActionResult<AuthorDTO> Get()
-        {
-            var authors = new List<AuthorDTO>();
-            using var conn = new SqlConnection(_connString);
-            var sql = "SELECT * FROM Authors";
-            using var cmd = new SqlCommand(sql, conn);
-            conn.Open();
-            _logger.LogInformation("Executing query: {sql}", sql);
-            using var reader = cmd.ExecuteReader();
-            if(reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    var author = new AuthorDTO();
-                    author.Id = reader.GetInt32(0);
-                    author.Name = reader.GetString(1);
-                    authors.Add(author);
-                }
-            }
-
-            return Ok(authors);
-        }
-
-        // GET api/<AuthorsController>/5
-        [HttpGet("{id}")]
-        public ActionResult<AuthorWithCoursesDTO> Get(int id)
-        {
-            var author = new AuthorWithCoursesDTO();
-            using var conn = new SqlConnection(_connString);
-            var sql = @"SELECT a.Id, a.Name, ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
+  // GET api/<AuthorsController>/5
+  [HttpGet("{id}")]
+  public ActionResult<AuthorWithCoursesDTO> Get(int id)
+  {
+    var author = new AuthorWithCoursesDTO();
+    using var conn = new SqlConnection(_connString);
+    var sql = @"SELECT a.Id, a.Name, ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
 FROM Authors a
 LEFT JOIN CourseAuthor ca ON a.Id = ca.AuthorId
 LEFT JOIN Courses c ON c.Id = ca.CourseId
 WHERE a.Id = @AuthorId";
-            using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@AuthorId", id);
-            conn.Open();
-            _logger.LogInformation("Executing query: {sql}, {parameters}", sql, cmd.Parameters);
-            using var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    author.Id = reader.GetInt32(0);
-                    author.Name = reader.GetString(1);
-                    if (!reader.IsDBNull(3))
-                    {
-                        author.Courses.Add(new CourseDTO
-                        {
-                            Id = reader.GetInt32(3),
-                            AuthorId = reader.GetInt32(4),
-                            RoyaltyPercentage = reader.GetInt32(2),
-                            Title = reader.GetString(5)
-                        });
-                    }
-                }
-            }
-
-            return Ok(author);
-        }
-
-        // POST api/<AuthorsController>
-        [HttpPost]
-        public ActionResult<AuthorDTO> Post([FromBody] CreateAuthorRequest newAuthor)
+    using var cmd = new SqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@AuthorId", id);
+    conn.Open();
+    _logger.LogInformation("Executing query: {sql}, {parameters}", sql, cmd.Parameters);
+    using var reader = cmd.ExecuteReader();
+    if (reader.HasRows)
+    {
+      while (reader.Read())
+      {
+        author.Id = reader.GetInt32(0);
+        author.Name = reader.GetString(1);
+        if (!reader.IsDBNull(3))
         {
-            using var conn = new SqlConnection(_connString);
-            var sql = "INSERT Authors (name) VALUES (@name);SELECT CAST(scope_identity() AS int)";
-            var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@name", newAuthor.Name);
-            conn.Open();
-            int newId = (int)cmd.ExecuteScalar();
-
-            var authorDto = new AuthorDTO
-            {
-                Id = newId,
-                Name = newAuthor.Name
-            };
-
-            return Ok(authorDto);
+          author.Courses.Add(new CourseDTO
+          {
+            Id = reader.GetInt32(3),
+            AuthorId = reader.GetInt32(4),
+            RoyaltyPercentage = reader.GetInt32(2),
+            Title = reader.GetString(5)
+          });
         }
-
-        // PUT api/<AuthorsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-
-            using var conn = new SqlConnection(_connString);
-            var sql = "UPDATE Authors SET name = @name WHERE Id = @id";
-            var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@name", value);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            conn.Open();
-            cmd.ExecuteNonQuery();
-            conn.Close();
-
-        }
-
-        // DELETE api/<AuthorsController>/5
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
-        {
-            using var conn = new SqlConnection(_connString);
-            var sql = "DELETE Authors WHERE Id = @AuthorId";
-            var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@AuthorId", id);
-            conn.Open();
-            cmd.ExecuteNonQuery();
-
-            return NoContent();
-        }
+      }
     }
+
+    return Ok(author);
+  }
+
+  // POST api/<AuthorsController>
+  [HttpPost]
+  public ActionResult<AuthorDTO> Post([FromBody] CreateAuthorRequest newAuthor)
+  {
+    using var conn = new SqlConnection(_connString);
+    var sql = "INSERT Authors (name) VALUES (@name);SELECT CAST(scope_identity() AS int)";
+    var cmd = new SqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@name", newAuthor.Name);
+    conn.Open();
+    int newId = (int)cmd.ExecuteScalar();
+
+    var authorDto = new AuthorDTO
+    {
+      Id = newId,
+      Name = newAuthor.Name
+    };
+
+    return Ok(authorDto);
+  }
+
+  // PUT api/<AuthorsController>/5
+  [HttpPut("{id}")]
+  public void Put(int id, [FromBody] string value)
+  {
+
+    using var conn = new SqlConnection(_connString);
+    var sql = "UPDATE Authors SET name = @name WHERE Id = @id";
+    var cmd = new SqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@name", value);
+    cmd.Parameters.AddWithValue("@id", id);
+
+    conn.Open();
+    cmd.ExecuteNonQuery();
+    conn.Close();
+
+  }
+
+  // DELETE api/<AuthorsController>/5
+  [HttpDelete("{id}")]
+  public ActionResult Delete(int id)
+  {
+    using var conn = new SqlConnection(_connString);
+    var sql = "DELETE Authors WHERE Id = @AuthorId";
+    var cmd = new SqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@AuthorId", id);
+    conn.Open();
+    cmd.ExecuteNonQuery();
+
+    return NoContent();
+  }
 }

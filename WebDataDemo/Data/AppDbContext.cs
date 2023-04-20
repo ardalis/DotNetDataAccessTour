@@ -1,24 +1,23 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using WebDataDemo.Model;
 
-namespace WebDataDemo.Data
+namespace WebDataDemo.Data;
+
+public class AppDbContext : IdentityDbContext
 {
-    public class AppDbContext : IdentityDbContext
-    {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
+  public AppDbContext(DbContextOptions<AppDbContext> options)
+      : base(options)
+  {
+  }
 
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<Course> Courses { get; set; }
+  public DbSet<Author> Authors { get; set; }
+  public DbSet<Course> Courses { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        }
-    }
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
+  {
+    base.OnModelCreating(modelBuilder);
+    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+  }
 }

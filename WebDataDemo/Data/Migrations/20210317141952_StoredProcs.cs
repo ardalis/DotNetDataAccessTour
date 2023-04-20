@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebDataDemo.Data.Migrations
+namespace WebDataDemo.Data.Migrations;
+
+public partial class StoredProcs : Migration
 {
-    public partial class StoredProcs : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(
-            @"
+        migrationBuilder.Sql(
+        @"
     EXEC ('CREATE PROCEDURE ListAuthors
     AS
         SELECT Id, Name FROM Authors
 ')");
-            migrationBuilder.Sql(
-            @"
+        migrationBuilder.Sql(
+        @"
     EXEC ('CREATE PROCEDURE ListAuthorsWithCourses
         @AuthorId int
     AS
@@ -23,8 +23,8 @@ namespace WebDataDemo.Data.Migrations
         LEFT JOIN Courses c ON c.Id = ca.CourseId
         WHERE a.Id = @AuthorId
 ')");
-            migrationBuilder.Sql(
-            @"
+        migrationBuilder.Sql(
+        @"
     EXEC ('CREATE PROCEDURE ListAuthorsWithCoursesMulti
         @AuthorId int
     AS
@@ -34,33 +34,32 @@ FROM CourseAuthor ca
 INNER JOIN Courses c ON c.Id = ca.CourseId
 WHERE ca.AuthorId = @AuthorId')");
 
-            migrationBuilder.Sql(
-            @"
+        migrationBuilder.Sql(
+        @"
     EXEC ('CREATE PROCEDURE InsertAuthor
         @name varchar(100)
     AS
 INSERT Authors (name) VALUES (@name);SELECT CAST(scope_identity() AS int);')");
 
-            migrationBuilder.Sql(
-            @"
+        migrationBuilder.Sql(
+        @"
     EXEC ('CREATE PROCEDURE DeleteAuthor
         @AuthorId int
     AS
 DELETE Authors WHERE Id = @AuthorId;')");
 
-          
-        }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(
-            @"
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql(
+        @"
     EXEC ('DROP PROCEDURE ListAuthors');
     EXEC ('DROP PROCEDURE ListAuthorsWithCourses')
     EXEC ('DROP PROCEDURE ListAuthorsWithCoursesMulti')
     EXEC ('DROP PROCEDURE InsertAuthor')
     EXEC ('DROP PROCEDURE DeleteAuthors')
 ");
-        }
     }
 }
