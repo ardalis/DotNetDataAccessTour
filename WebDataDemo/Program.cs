@@ -1,21 +1,22 @@
 using Dapper.FluentMap;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 using WebDataDemo.DapperMapping;
 using WebDataDemo.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
+builder.Host.UseSerilog((_, config) =>
+    config
+        .ReadFrom.Configuration(builder.Configuration)
+        .WriteTo.Console()
+        .WriteTo.Seq("http://localhost:5341"));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+        .LogTo(Log.Logger.Warning, LogLevel.Warning, null));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
@@ -61,13 +62,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapRazorPages();
-    endpoints.MapControllers();
-});
+app.MapRazorPages();
+app.MapControllers();
 
 FluentMapper.Initialize(config =>
 {
     config.AddMap(new CourseDtoMap());
 });
+
+app.Run();
