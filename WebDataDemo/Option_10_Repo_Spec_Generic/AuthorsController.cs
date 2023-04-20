@@ -10,10 +10,15 @@ namespace WebDataDemo.Option_10_Repo_Spec_Generic;
 public class AuthorsController : ControllerBase
 {
   private readonly IRepository<Author> _authorRepository;
+  private readonly ILogger<AuthorsController> _logger;
 
-  public AuthorsController(IRepository<Author> authorRepository)
+  public AuthorsController(IRepository<Author> authorRepository,
+    ILogger<AuthorsController> logger)
   {
     _authorRepository = authorRepository;
+    _logger = logger;
+
+    _logger.LogInformation($"Repo type: {authorRepository.GetType().Name}");  
   }
 
   // GET: api/<AuthorsController>

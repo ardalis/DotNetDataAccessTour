@@ -1,9 +1,12 @@
 ﻿using Dapper.FluentMap;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using WebDataDemo.DapperMapping;
 using WebDataDemo.Data;
+using WebDataDemo.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +28,19 @@ builder.Services.AddScoped<WebDataDemo.Option_06_Repo.IAuthorRepository, WebData
 builder.Services.AddScoped<WebDataDemo.Option_07_Repo.IAuthorRepository, WebDataDemo.Option_07_Repo.EfAuthorRepository>();
 builder.Services.AddScoped<WebDataDemo.Option_08_Repo.IAuthorRepository, WebDataDemo.Option_08_Repo.EfAuthorRepository>();
 builder.Services.AddScoped<WebDataDemo.Option_09_Repo_Spec.IAuthorRepository, WebDataDemo.Option_09_Repo_Spec.EfAuthorRepository>();
-builder.Services.AddScoped(typeof(WebDataDemo.Option_10_Repo_Spec_Generic.IRepository<>), typeof(WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<>));
+
+// Option 10
+
+//builder.Services.AddScoped(typeof(WebDataDemo.Option_10_Repo_Spec_Generic.IRepository<>), 
+//    typeof(WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<>));
+
+// optional cached decorator for the repo
+builder.Services.AddScoped<WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<Author>>();
+builder.Services.AddScoped<WebDataDemo.Option_10_Repo_Spec_Generic.IRepository<Author>>(provider =>
+   new WebDataDemo.Option_10_Repo_Spec_Generic.CachedRepository<Author>(
+      provider.GetRequiredService<IMemoryCache>(),
+      provider.GetRequiredService<ILogger<WebDataDemo.Option_10_Repo_Spec_Generic.CachedRepository<Author>>>(),
+      provider.GetRequiredService<WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<Author>>()));
 
 builder.Services.AddSwaggerGen(options =>
 {
