@@ -60,6 +60,7 @@ WHERE a.Id = @AuthorId";
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@AuthorId", id);
             conn.Open();
+            _logger.LogInformation("Executing query: {sql}, {parameters}", sql, cmd.Parameters);
             using var reader = cmd.ExecuteReader();
             if (reader.HasRows)
             {

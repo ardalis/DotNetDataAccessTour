@@ -14,10 +14,13 @@ namespace WebDataDemo.Option_03_Dapper_SQL
     public class AuthorsController : ControllerBase
     {
         private readonly string _connString;
+        private readonly ILogger<AuthorsController> _logger;
 
-        public AuthorsController(IConfiguration config)
+        public AuthorsController(IConfiguration config,
+            ILogger<AuthorsController> logger)
         {
             _connString = config.GetConnectionString("DefaultConnection");
+            _logger = logger;
         }
 
         // GET: api/<AuthorsController>
@@ -26,6 +29,7 @@ namespace WebDataDemo.Option_03_Dapper_SQL
         {
             using var conn = new SqlConnection(_connString);
             var sql = "SELECT * FROM Authors";
+            _logger.LogInformation("Executing query: {sql}", sql);
             var authors = conn.Query<AuthorDTO>(sql).ToList();
 
             return Ok(authors);
@@ -42,6 +46,8 @@ SELECT ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
 FROM CourseAuthor ca
 INNER JOIN Courses c ON c.Id = ca.CourseId
 WHERE ca.AuthorId = @AuthorId";
+            _logger.LogInformation("Executing query: {sql}", sql);
+
             var result = conn.QueryMultiple(sql, new { AuthorId = id });
 
             var author = result.ReadSingle<AuthorWithCoursesDTO>();

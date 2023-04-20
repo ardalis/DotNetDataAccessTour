@@ -12,10 +12,13 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
     public class AuthorsController : ControllerBase
     {
         private readonly string _connString;
+        private readonly ILogger<AuthorsController> _logger;
 
-        public AuthorsController(IConfiguration config)
+        public AuthorsController(IConfiguration config,
+            ILogger<AuthorsController> logger)
         {
             _connString = config.GetConnectionString("DefaultConnection");
+            _logger = logger;
         }
 
         // GET: api/<AuthorsController>
@@ -25,9 +28,10 @@ namespace WebDataDemo.Option_02_ADONET_Sprocs
             var authors = new List<AuthorDTO>();
             using var conn = new SqlConnection(_connString);
             var sql = "ListAuthors";
-            var cmd = new SqlCommand(sql, conn);
+            using var cmd = new SqlCommand(sql, conn);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             conn.Open();
+            _logger.LogInformation("Executing stored proc: {sql}", sql);
             using var reader = cmd.ExecuteReader();
             if(reader.HasRows)
             {
