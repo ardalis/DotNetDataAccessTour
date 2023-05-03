@@ -36,8 +36,8 @@ public class AuthorsController : ControllerBase
   [HttpGet("{id}")]
   public ActionResult<AuthorWithCoursesDTO> Get(int id)
   {
-    using var conn = new SqlConnection(_connString);
     // https://medium.com/dapper-net/handling-multiple-resultsets-4b108a8c5172
+    using var conn = new SqlConnection(_connString);
     var sql = @"SELECT a.Id, a.Name FROM Authors a WHERE Id = @AuthorId;
 SELECT ca.RoyaltyPercentage, ca.CourseId, ca.AuthorId, c.Title
 FROM CourseAuthor ca

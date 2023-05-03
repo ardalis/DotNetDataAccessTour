@@ -18,7 +18,7 @@ public class AuthorsController : ControllerBase
     _authorRepository = authorRepository;
     _logger = logger;
 
-    _logger.LogInformation($"Repo type: {authorRepository.GetType().Name}");  
+    _logger.LogDebug($"Repo type: {authorRepository.GetType().Name}");  
   }
 
   // GET: api/<AuthorsController>

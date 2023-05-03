@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using WebDataDemo.Dtos;
@@ -26,7 +27,8 @@ public class AuthorsController : ControllerBase
   {
     using var conn = new SqlConnection(_connString);
     var sql = "ListAuthors";
-    var authors = conn.Query<AuthorDTO>(sql, commandType: System.Data.CommandType.StoredProcedure)
+    var authors = conn.Query<AuthorDTO>(sql, 
+      commandType: CommandType.StoredProcedure)
         .ToList();
 
     return Ok(authors);
@@ -41,7 +43,8 @@ public class AuthorsController : ControllerBase
 
     _logger.LogInformation("Executing stored proc: {sql}", sql);
 
-    var result = conn.QueryMultiple(sql, new { AuthorId = id }, commandType: System.Data.CommandType.StoredProcedure);
+    var result = conn.QueryMultiple(sql, new { AuthorId = id },
+      commandType: CommandType.StoredProcedure);
 
     var author = result.ReadSingle<AuthorWithCoursesDTO>();
     var courses = result.Read<CourseDTO>().ToList();
