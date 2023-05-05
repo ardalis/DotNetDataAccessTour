@@ -11,5 +11,4 @@ public interface IAuthorRepository
     Task CreateAsync(Author newAuthor);
     Task UpdateAsync(Author author);
     Task DeleteAsync(Author author);
-
 }

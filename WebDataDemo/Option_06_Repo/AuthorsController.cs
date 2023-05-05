@@ -21,8 +21,8 @@ public class AuthorsController : ControllerBase
   public async Task<ActionResult<AuthorDTO>> Get()
   {
     var authors = (await _authorRepository.ListAsync())
-        .Select(a => new AuthorDTO { Id = a.Id, Name = a.Name }) // note this no longer impacts query generation
-        .ToList(); // this is an extra list operation; we could use a cast instead
+    .Select(a => new AuthorDTO { Id = a.Id, Name = a.Name }) // note this no longer impacts query generation
+    .ToList(); // this is an extra list operation; we could use a cast instead
 
     return Ok(authors);
   }

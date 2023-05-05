@@ -20,7 +20,7 @@ public class EfAuthorRepository : IAuthorRepository
             .FirstOrDefaultAsync(author => author.Id == id);
     }
 
-    public async Task<IEnumerable<Author>> List(Expression<Func<Author, bool>> predicate)
+    public async Task<IEnumerable<Author>> ListAsync(Expression<Func<Author, bool>> predicate)
     {
         return await _dbContext.Authors
             .Where(predicate)

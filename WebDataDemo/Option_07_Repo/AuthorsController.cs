@@ -35,22 +35,38 @@ public class AuthorsController : ControllerBase
   [HttpGet("{id}")]
   public async Task<ActionResult<AuthorWithCoursesDTO>> Get(int id)
   {
-    var author = await _authorRepository.GetByIdAsync(id);
+    // doesn't work - courses will be empty
+    //var author = await _authorRepository.GetByIdAsync(id);
+    //var authorDTO = new AuthorWithCoursesDTO
+    //{
+    //  Id = author.Id,
+    //  Name = author.Name,
+    //  Courses = author.Courses.Select(c => new CourseDTO
+    //  {
+    //    Id = c.Id,
+    //    Title = c.Course.Title,
+    //    AuthorId = author.Id,
+    //    RoyaltyPercentage = c.RoyaltyPercentage
+    //  }).ToList()
+    //};
 
-    var authorDTO = new AuthorWithCoursesDTO
-    {
-      Id = author.Id,
-      Name = author.Name,
-      Courses = author.Courses.Select(c => new CourseDTO
+    var authorsWithCourses = _authorRepository.List()
+      .Include(a => a.Courses)
+      .Select(author => new AuthorWithCoursesDTO
       {
-        Id = c.Id,
-        Title = c.Course.Title,
-        AuthorId = author.Id,
-        RoyaltyPercentage = c.RoyaltyPercentage
-      }).ToList()
-    };
+        Id = author.Id,
+        Name = author.Name,
+        Courses = author.Courses.Select(c => new CourseDTO
+        {
+          Id = c.Id,
+          Title = c.Course.Title,
+          AuthorId = author.Id,
+          RoyaltyPercentage = c.RoyaltyPercentage
+        }).ToList()
+      })
+      .FirstOrDefault(a => a.Id == id);
 
-    return authorDTO;
+    return authorsWithCourses;
   }
 
   // POST api/<AuthorsController>

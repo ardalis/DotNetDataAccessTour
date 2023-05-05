@@ -49,6 +49,11 @@ public class AuthorsController : ControllerBase
       }).ToList()
     };
 
+    // example passing an expression
+    var steve = (await _authorRepository
+                  .ListAsync(a => a.Name == "Steve Smith"))
+                  .FirstOrDefault();
+
     return authorDTO;
   }
 
