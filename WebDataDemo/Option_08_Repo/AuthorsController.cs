@@ -23,7 +23,7 @@ public class AuthorsController : ControllerBase
   [HttpGet]
   public async Task<ActionResult<AuthorDTO>> Get()
   {
-    var authors = (await _authorRepository.List(a => true))
+    var authors = (await _authorRepository.ListAsync(a => true))
         .Select(a => new AuthorDTO { Id = a.Id, Name = a.Name }) // projection/mapping in memory
         .ToList();
 
