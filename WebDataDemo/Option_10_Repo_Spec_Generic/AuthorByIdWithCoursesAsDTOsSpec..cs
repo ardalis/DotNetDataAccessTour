@@ -4,8 +4,7 @@ using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_10_Repo_Spec_Generic;
 
-public class AuthorByIdWithCoursesAsDTOsSpec : Specification<Author, AuthorWithCoursesDTO>,
-                                                ISingleResultSpecification
+public class AuthorByIdWithCoursesAsDTOsSpec : Specification<Author, AuthorWithCoursesDTO>
 {
   public AuthorByIdWithCoursesAsDTOsSpec(int id)
   {

@@ -42,6 +42,11 @@ public class CachedRepository<T> : IRepository<T> where T : class
     return _sourceRepository.AnyAsync(cancellationToken);
   }
 
+  public IAsyncEnumerable<T> AsAsyncEnumerable(ISpecification<T> specification)
+  {
+    return _sourceRepository.AsAsyncEnumerable(specification);
+  }
+
   public Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.CountAsync(specification, cancellationToken);
@@ -60,6 +65,11 @@ public class CachedRepository<T> : IRepository<T> where T : class
   public Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.DeleteRangeAsync(entities, cancellationToken);
+  }
+
+  public Task DeleteRangeAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
+  {
+    return _sourceRepository.DeleteRangeAsync(specification, cancellationToken);
   }
 
   public Task<T> FirstOrDefaultAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
@@ -183,11 +193,33 @@ public class CachedRepository<T> : IRepository<T> where T : class
 
   public Task<T> SingleOrDefaultAsync(ISingleResultSpecification<T> specification, CancellationToken cancellationToken = default)
   {
+    if (specification.CacheEnabled)
+    {
+      string key = $"{specification.CacheKey}-SingleOrDefaultAsync";
+      _logger.LogInformation("Checking cache for " + key);
+      return _cache.GetOrCreate(key, entry =>
+      {
+        entry.SetOptions(_cacheOptions);
+        _logger.LogWarning("Fetching source data for " + key);
+        return _sourceRepository.SingleOrDefaultAsync(specification, cancellationToken);
+      });
+    }
     return _sourceRepository.SingleOrDefaultAsync(specification, cancellationToken);
   }
 
   public Task<TResult?> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<T, TResult> specification, CancellationToken cancellationToken = default)
   {
+    if (specification.CacheEnabled)
+    {
+      string key = $"{specification.CacheKey}-SingleOrDefaultAsync";
+      _logger.LogInformation("Checking cache for " + key);
+      return _cache.GetOrCreate(key, entry =>
+      {
+        entry.SetOptions(_cacheOptions);
+        _logger.LogWarning("Fetching source data for " + key);
+        return _sourceRepository.SingleOrDefaultAsync(specification, cancellationToken);
+      });
+    }
     return _sourceRepository.SingleOrDefaultAsync(specification, cancellationToken);
   }
 
