@@ -1,0 +1,12 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@hostname=localhost
+@port=5001
+@version=v09
+
+GET https://{{hostname}}:{{port}}/api/{{version}}/Authors
+
+###
+
+GET https://{{hostname}}:{{port}}/api/{{version}}/Authors/1
+
+###
