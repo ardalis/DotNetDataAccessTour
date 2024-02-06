@@ -1,8 +1,13 @@
 # Dot Net Data Access Tour
 
-A tour of different data access approaches in .NET 7+.
+A tour of different data access approaches in .NET 8+.
 
 **Note:** This is meant to demonstrate different ways to make data access calls, not best practices (or even reasonably good practices) for building ASP.NET Core Web APIs.
+
+## Related Videos
+
+- [Custom Specifications with EF Core](https://www.youtube.com/watch?v=i5FvDLsSrn0) @ardalis, 2024
+- [Improving Data Access with Abstractions](https://www.youtube.com/watch?v=g6cjCbxq54Y) Stir Trek, 2023
 
 ## Data Access Options (CRUD + Queries)
 
