@@ -7,6 +7,12 @@ using Serilog;
 using WebDataDemo.DapperMapping;
 using WebDataDemo.Data;
 using WebDataDemo.Model;
+using WebDataDemo.Option_10_Repo_Spec_Generic;
+
+var logger = Log.Logger = new LoggerConfiguration()
+  .Enrich.FromLogContext()
+  .WriteTo.Console()
+  .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,18 +35,15 @@ builder.Services.AddScoped<WebDataDemo.Option_07_Repo.IAuthorRepository, WebData
 builder.Services.AddScoped<WebDataDemo.Option_08_Repo.IAuthorRepository, WebDataDemo.Option_08_Repo.EfAuthorRepository>();
 builder.Services.AddScoped<WebDataDemo.Option_09_Repo_Spec.IAuthorRepository, WebDataDemo.Option_09_Repo_Spec.EfAuthorRepository>();
 
-// Option 10
+// Option 10 - Choose one of the options below and comment the others
+// A. Just the generic repo
+//builder.Services.AddBasicRepoNoCaching(logger);
 
-//builder.Services.AddScoped(typeof(WebDataDemo.Option_10_Repo_Spec_Generic.IRepository<>), 
-//    typeof(WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<>));
+// B. Add CachedRepo decorator
+//builder.Services.AddCachedRepository(logger);
 
-// optional cached decorator for the repo
-builder.Services.AddScoped<WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<Author>>();
-builder.Services.AddScoped<WebDataDemo.Option_10_Repo_Spec_Generic.IRepository<Author>>(provider =>
-   new WebDataDemo.Option_10_Repo_Spec_Generic.CachedRepository<Author>(
-      provider.GetRequiredService<IMemoryCache>(),
-      provider.GetRequiredService<ILogger<WebDataDemo.Option_10_Repo_Spec_Generic.CachedRepository<Author>>>(),
-      provider.GetRequiredService<WebDataDemo.Option_10_Repo_Spec_Generic.EfRepository<Author>>()));
+// C. Add CachedRepo decorator and TimedRepo decorator
+builder.Services.AddTimedCachedRepository(logger);
 
 builder.Services.AddSwaggerGen(options =>
 {

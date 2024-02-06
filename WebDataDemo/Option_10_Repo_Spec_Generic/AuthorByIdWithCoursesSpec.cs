@@ -13,6 +13,5 @@ public class AuthorByIdWithCoursesSpec : Specification<Author>, ISingleResultSpe
         .ThenInclude(ca => ca.Course);
 
     Query.EnableCache(nameof(AuthorByIdWithCoursesSpec), id);
-
   }
 }

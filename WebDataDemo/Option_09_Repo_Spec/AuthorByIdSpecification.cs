@@ -8,6 +8,8 @@ public class AuthorByIdSpecification : AuthorSpecification
     public AuthorByIdSpecification(int id)
     {
         Predicate = Author => Author.Id == id;
-        IncludeExpression = entity => entity.Include(a => a.Courses).ThenInclude(ca => ca.Course);
+        IncludeExpression = entity => entity
+                                      .Include(a => a.Courses)
+                                      .ThenInclude(ca => ca.Course);
     }
 }

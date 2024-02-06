@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Memory;
 
 namespace WebDataDemo.Option_10_Repo_Spec_Generic;
-
 public class CachedRepository<T> : IRepository<T> where T : class
 {
   private readonly IMemoryCache _cache;
