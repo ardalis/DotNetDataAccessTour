@@ -35,30 +35,32 @@ public class AuthorsController : ControllerBase
   [HttpGet("{id}")]
   public async Task<ActionResult<AuthorWithCoursesDTO>> Get(int id)
   {
-    // option 1
-    //var spec = new AuthorByIdWithCoursesAsDTOsSpec(id);
-    //var authorDTO = (await _authorRepository.ListAsync(spec)).SingleOrDefault();
+    // option 1 - projection is used for the query
+    var spec = new AuthorByIdWithCoursesAsDTOsSpec(id);
+    AuthorWithCoursesDTO authorDTO = await _authorRepository.SingleOrDefaultAsync(spec);
+    _logger.LogInformation("Got authorDTO", authorDTO);
 
-    // option 2
-    var spec = new AuthorByIdWithCoursesSpec(id);
-    var author = await _authorRepository.SingleOrDefaultAsync(spec);
+    // option 2 - mapping is done in memory after fetching full entity
+    var spec2 = new AuthorByIdWithCoursesSpec(id);
+    var author = await _authorRepository.SingleOrDefaultAsync(spec2);
 
-    var authorDTO = new AuthorWithCoursesDTO
+    var authorDTO2 = new AuthorWithCoursesDTO
     {
       Name = author.Name,
       Id = author.Id,
       Courses = new List<CourseDTO>()
     };
-    authorDTO.Courses = author.Courses
+    authorDTO2.Courses.AddRange(author.Courses
         .Select(ca => new CourseDTO
         {
           Id = ca.Course.Id,
           AuthorId = ca.AuthorId,
           RoyaltyPercentage = ca.RoyaltyPercentage,
           Title = ca.Course.Title
-        }).ToList();
+        }));
+    _logger.LogInformation("Got authorDTO2 and mapped it in memory", authorDTO2);
 
-    return authorDTO;
+    return authorDTO2;
   }
 
   // POST api/<AuthorsController>

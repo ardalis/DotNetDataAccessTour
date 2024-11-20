@@ -79,6 +79,14 @@ public class AuthorsController : ControllerBase
   [HttpPut("{id}")]
   public ActionResult Put(int id, [FromBody] string value)
   {
+    // ExecuteUpdate in EF Core 7 https://learn.microsoft.com/en-us/ef/core/saving/execute-insert-update-delete
+    int rowsAffected = _dbContext.Authors
+      .Where(a =>  a.Id == id)
+      .ExecuteUpdate(setters => setters.SetProperty(a => a.Name, value));
+
+    return rowsAffected > 0 ? NoContent() : NotFound();
+
+    // EF Core 6 and earlier method
     var authorToUpdate = _dbContext.Authors.Find(id);
     if (authorToUpdate is null) return NotFound();
 
@@ -88,13 +96,17 @@ public class AuthorsController : ControllerBase
     _dbContext.SaveChanges();
 
     return NoContent();
-
   }
 
   // DELETE api/<AuthorsController>/5
   [HttpDelete("{id}")]
   public ActionResult Delete(int id)
   {
+    // ExecuteDelete in EF Core 7 https://learn.microsoft.com/en-us/ef/core/saving/execute-insert-update-delete
+    int rowsAffected = _dbContext.Authors.Where(a => a.Id == id).ExecuteDelete();
+    return rowsAffected > 0 ? NoContent() : NotFound();
+
+    // EF Core 6 and earlier method
     var authorToDelete = _dbContext.Authors.Find(id);
 
     if (authorToDelete == null) return NotFound();
