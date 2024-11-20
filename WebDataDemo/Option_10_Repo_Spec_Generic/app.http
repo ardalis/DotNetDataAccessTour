@@ -6,3 +6,5 @@
 GET https://{{hostname}}:{{port}}/api/{{version}}/Authors
 
 ###
+
+GET https://{{hostname}}:{{port}}/api/{{version}}/Authors/1

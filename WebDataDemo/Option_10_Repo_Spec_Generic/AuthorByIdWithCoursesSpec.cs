@@ -3,7 +3,8 @@ using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_10_Repo_Spec_Generic;
 
-public class AuthorByIdWithCoursesSpec : Specification<Author>, ISingleResultSpecification<Author>
+public class AuthorByIdWithCoursesSpec : Specification<Author>,
+  ISingleResultSpecification<Author>
 {
   public AuthorByIdWithCoursesSpec(int id)
   {
