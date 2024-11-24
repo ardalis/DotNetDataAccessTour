@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Hybrid;
 using WebDataDemo.Model;
 
 namespace WebDataDemo.Option_10_Repo_Spec_Generic;
@@ -24,7 +24,7 @@ public static class Option10Extensions
     services.AddScoped<EfRepository<Author>>();
     services.AddScoped<IRepository<Author>>(provider =>
        new CachedRepository<Author>(
-          provider.GetRequiredService<IMemoryCache>(),
+          provider.GetRequiredService<HybridCache>(),
           provider.GetRequiredService<ILogger<CachedRepository<Author>>>(),
           provider.GetRequiredService<EfRepository<Author>>()));
 
@@ -40,7 +40,7 @@ public static class Option10Extensions
     services.AddScoped<EfRepository<Author>>();
     services.AddScoped<CachedRepository<Author>>(provider =>
       new CachedRepository<Author>(
-          provider.GetRequiredService<IMemoryCache>(),
+          provider.GetRequiredService<HybridCache>(),
           provider.GetRequiredService<ILogger<CachedRepository<Author>>>(),
           provider.GetRequiredService<EfRepository<Author>>()));
 
