@@ -1,6 +1,6 @@
 # Dot Net Data Access Tour
 
-A tour of different data access approaches in .NET 8+.
+A tour of different data access approaches in .NET 9+.
 
 **Note:** This is meant to demonstrate different ways to make data access calls, not best practices (or even reasonably good practices) for building ASP.NET Core Web APIs.
 
