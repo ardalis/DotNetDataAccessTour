@@ -92,17 +92,17 @@ _wrappedRepository.AddRangeAsync(entities, cancellationToken));
     throw new NotImplementedException();
   }
 
-  public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
+  public Task<int> DeleteAsync(T entity, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }
 
-  public Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+  public Task<int> DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }
 
-  public Task DeleteRangeAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
+  public Task<int> DeleteRangeAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }
@@ -170,12 +170,12 @@ _wrappedRepository.SingleOrDefaultAsync(specification, cancellationToken));
 _wrappedRepository.SingleOrDefaultAsync(specification, cancellationToken));
   }
 
-  public Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
+  public Task<int> UpdateAsync(T entity, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }
 
-  public Task UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+  public Task<int> UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     throw new NotImplementedException();
   }

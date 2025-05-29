@@ -53,17 +53,17 @@ public class CachedRepository<T> : IRepository<T> where T : class
     return _sourceRepository.CountAsync(cancellationToken);
   }
 
-  public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
+  public Task<int> DeleteAsync(T entity, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.DeleteAsync(entity, cancellationToken);
   }
 
-  public Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+  public Task<int> DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.DeleteRangeAsync(entities, cancellationToken);
   }
 
-  public Task DeleteRangeAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
+  public Task<int> DeleteRangeAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.DeleteRangeAsync(specification, cancellationToken);
   }
@@ -101,36 +101,6 @@ public class CachedRepository<T> : IRepository<T> where T : class
   public Task<T> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull
   {
     return _sourceRepository.GetByIdAsync(id, cancellationToken);
-  }
-
-  public Task<T> GetBySpecAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
-  {
-    if (specification.CacheEnabled)
-    {
-      string key = $"{specification.CacheKey}-GetBySpecAsync";
-      _logger.LogInformation("Checking cache for " + key);
-      return _cache.GetOrCreateAsync(key, async entry =>
-      {
-        _logger.LogWarning("Fetching source data for " + key);
-        return await _sourceRepository.GetBySpecAsync(specification, cancellationToken);
-      }).AsTask();
-    }
-    return _sourceRepository.GetBySpecAsync(specification, cancellationToken);
-  }
-
-  public Task<TResult?> GetBySpecAsync<TResult>(ISpecification<T, TResult> specification, CancellationToken cancellationToken = default)
-  {
-    if (specification.CacheEnabled)
-    {
-      string key = $"{specification.CacheKey}-GetBySpecAsync";
-      _logger.LogInformation("Checking cache for " + key);
-      return _cache.GetOrCreateAsync(key, async entry =>
-      {
-        _logger.LogWarning("Fetching source data for " + key);
-        return await _sourceRepository.GetBySpecAsync(specification, cancellationToken);
-      }).AsTask();
-    }
-    return _sourceRepository.GetBySpecAsync(specification, cancellationToken);
   }
 
   public Task<List<T>> ListAsync(CancellationToken cancellationToken = default)
@@ -210,12 +180,12 @@ public class CachedRepository<T> : IRepository<T> where T : class
     return _sourceRepository.SingleOrDefaultAsync(specification, cancellationToken);
   }
 
-  public Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
+  public Task<int> UpdateAsync(T entity, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.UpdateAsync(entity, cancellationToken);
   }
 
-  public Task UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+  public Task<int> UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     return _sourceRepository.UpdateRangeAsync(entities, cancellationToken);
   }
