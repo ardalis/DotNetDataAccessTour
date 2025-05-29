@@ -2,6 +2,7 @@
 @hostname=localhost
 @port=5001
 @version=v10
+# version from 01 to 10
 
 GET https://{{hostname}}:{{port}}/api/{{version}}/Authors
 
