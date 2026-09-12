@@ -16,21 +16,23 @@ var logger = Log.Logger = new LoggerConfiguration()
   .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+var seqUri = builder.Configuration["SEQ_INGESTION_URI"]
+    ?? "http://localhost:5341";
 
 builder.Host.UseSerilog((_, config) =>
     config
         .ReadFrom.Configuration(builder.Configuration)
         .WriteTo.Console()
-        .WriteTo.Seq("http://localhost:5341"));
+        .WriteTo.Seq(seqUri));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure())
         .LogTo(Log.Logger.Warning, LogLevel.Warning, null));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
-#pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 builder.Services.AddHybridCache(options =>
 {
   options.DefaultEntryOptions = new Microsoft.Extensions.Caching.Hybrid.HybridCacheEntryOptions
@@ -39,7 +41,6 @@ builder.Services.AddHybridCache(options =>
     LocalCacheExpiration = TimeSpan.FromSeconds(10)
   };
 });
-#pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<WebDataDemo.Option_06_Repo.IAuthorRepository, WebDataDemo.Option_06_Repo.EfAuthorRepository>();
 builder.Services.AddScoped<WebDataDemo.Option_07_Repo.IAuthorRepository, WebDataDemo.Option_07_Repo.EfAuthorRepository>();
