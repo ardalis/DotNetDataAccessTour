@@ -22,7 +22,11 @@ A tour of different data access approaches in .NET 9+.
 - Repository layer
 - Application layer
 
-## Running the App - Create the Database
+## Running the App - Run from Aspire
+
+An Aspire host is provided to run the WebDataDemo itself, SQL server and Seq as a container. Just run the `DotNetDataAccessTour.AppHost` project. Alternatively you can manually run each component as explained below.  
+
+## Running the App - Manually: Create the Database
 
 EF and its Migrations are not required for all of these variants, but it does provide a quick and easy way to get your data in place if you want to run these samples. Just run this command from the `WebDataDemo` folder:
 

@@ -8,5 +8,6 @@
     <File Path=".editorconfig" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="DotNetDataAccessTour.AppHost/DotNetDataAccessTour.AppHost.csproj" />
   <Project Path="WebDataDemo/WebDataDemo.csproj" />
 </Solution>
